@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@Table(name="Account")
 public class Account {
 
     @Id
@@ -39,6 +40,18 @@ public class Account {
     public void setQuestionSet(Set<Question> questionSet) {
         this.questionSet = questionSet;
     }
+
+    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
+    private Set<Answer> answerSet = new HashSet<>();
+
+    public Set<Answer> getAnswerSet() {
+        return answerSet;
+    }
+
+    public void setAnswerSet(Set<Answer> answerSet) {
+        this.answerSet = answerSet;
+    }
+
 
     public Account() {
     }

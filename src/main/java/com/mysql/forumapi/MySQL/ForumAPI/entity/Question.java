@@ -7,8 +7,11 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
+@Table(name="Question")
 public class Question {
 
     @Id
@@ -36,6 +39,17 @@ public class Question {
     @JoinColumn(name="id", nullable = false, insertable = false, updatable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Account account;
+
+    @OneToMany(mappedBy = "question", fetch = FetchType.LAZY)
+    private Set<Answer> answerSet = new HashSet<>();
+
+    public Set<Answer> getAnswerSet() {
+        return answerSet;
+    }
+
+    public void setAnswerSet(Set<Answer> answerSet) {
+        this.answerSet = answerSet;
+    }
 
     public Question(int accountId) {
         this.accountId = accountId;

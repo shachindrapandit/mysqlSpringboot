@@ -1,13 +1,15 @@
 package com.mysql.forumapi.MySQL.ForumAPI.service;
 
 import com.mysql.forumapi.MySQL.ForumAPI.entity.Account;
+import com.mysql.forumapi.MySQL.ForumAPI.entity.Answer;
+import com.mysql.forumapi.MySQL.ForumAPI.entity.Question;
 import com.mysql.forumapi.MySQL.ForumAPI.repository.AccountRepository;
+import com.mysql.forumapi.MySQL.ForumAPI.repository.AnswerRepository;
+import com.mysql.forumapi.MySQL.ForumAPI.repository.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class AccountService {
@@ -15,8 +17,36 @@ public class AccountService {
     @Autowired
     private AccountRepository repository;
 
-    public List<Account> getAccount(){
-        return repository.findAll();
+    @Autowired
+    private AnswerRepository answerRepository;
+
+    @Autowired
+    private QuestionRepository questionRepository;
+
+    Set<Answer> answerSet = new HashSet<>();
+    List<Account> accountList = new ArrayList<>();
+    Set<Question> questionSet = new HashSet<>();
+
+    public List<Account> getAccount(int id){
+
+        Optional<Account> accountId = repository.getDetailsForAccountId(id);
+        Account account = accountId.get();
+
+        List<Answer> optionalAnswer = answerRepository.findByAccountId(id);
+        List<Question> questionList = questionRepository.findByAccountId(id);
+
+        for(Answer answer: optionalAnswer) {
+            answerSet.add(answer);
+        }
+
+        for(Question question: questionList)
+            questionSet.add(question);
+
+        account.setAnswerSet(answerSet);
+        account.setQuestionSet(questionSet);
+        accountList.add(account);
+
+        return accountList;
     }
 
     public Account createAccount(Account account){

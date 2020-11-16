@@ -5,6 +5,7 @@ import com.mysql.forumapi.MySQL.ForumAPI.entity.Answer;
 import com.mysql.forumapi.MySQL.ForumAPI.entity.Comment;
 import com.mysql.forumapi.MySQL.ForumAPI.entity.Question;
 import com.mysql.forumapi.MySQL.ForumAPI.repository.AccountRepository;
+import com.mysql.forumapi.MySQL.ForumAPI.repository.AnswerRepository;
 import com.mysql.forumapi.MySQL.ForumAPI.repository.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,9 @@ public class QuestionService {
     @Autowired
     private QuestionRepository questionRepository;
 
+    @Autowired
+    private AnswerRepository answerRepository;
+
     public List<Question> getAllQuestion(){
         return questionRepository.findAll();
     }
@@ -44,7 +48,9 @@ public class QuestionService {
 
     public Question createQuestion(int accountId, Question question){
         Set<Question> questions = new HashSet<>();
+        Set<Answer> answerSet = new HashSet<>();
         Account account1 = new Account();
+        Answer answer = new Answer();
 
         Optional<Account> byId = accountRepository.findById(accountId);
 

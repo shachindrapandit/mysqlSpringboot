@@ -1,9 +1,11 @@
 package com.mysql.forumapi.MySQL.ForumAPI.controller;
 
 import com.mysql.forumapi.MySQL.ForumAPI.entity.Account;
+import com.mysql.forumapi.MySQL.ForumAPI.entity.Answer;
 import com.mysql.forumapi.MySQL.ForumAPI.entity.Question;
 import com.mysql.forumapi.MySQL.ForumAPI.repository.AccountRepository;
 import com.mysql.forumapi.MySQL.ForumAPI.service.AccountService;
+import com.mysql.forumapi.MySQL.ForumAPI.service.AnswerService;
 import com.mysql.forumapi.MySQL.ForumAPI.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -22,11 +24,14 @@ public class AccountController {
     @Autowired
     private QuestionService questionService;
 
+    @Autowired
+    private AnswerService answerService;
+
     //Account
 
-    @GetMapping(value="/getAccountDetails")
-    public List<Account> getAccountDetails(){
-        return accountService.getAccount();
+    @GetMapping(value="/getAccountDetails/{id}")
+    public List<Account> getAccountDetails(@PathVariable(value="id") int id){
+        return accountService.getAccount(id);
     }
 
     @PostMapping(value="/toAccount", consumes = "application/json", produces = "application/json")
@@ -57,5 +62,30 @@ public class AccountController {
     public Optional<Question> getQuestionById(@PathVariable(value="questionId") int id){
         return questionService.getQuestionById(id);
     }
+
+    //Answer
+
+    @PostMapping(value="{questionId}/{accountId}/answer", consumes = "application/json", produces = "application/json")
+    public Answer createAnswer(@PathVariable(value="accountId") int accountId, @PathVariable(value="questionId") int questionId, @RequestBody Answer answer){
+        return answerService.createAnswer(accountId, questionId, answer);
+    }
+
+    @GetMapping(value = "/answer/{answerId}")
+    public Optional<Answer> getAnswerById(@PathVariable(value="answerId") int id){
+        return answerService.getAnswerById(id);
+    }
+
+    @GetMapping(value = "/getAllAnswersByAccount/{accountId}")
+    public List<Answer> getAllAnswerByAccount(@PathVariable(value="accountId") int id){
+        return answerService.getAnswerByAccountId(id);
+    }
+
+    @GetMapping(value = "/getAllAnswersByQuestion/{questionId}")
+    public Optional<Answer> getAnswerByQuestionId(@PathVariable(value="questionId") int id){
+        return answerService.getAnswerByQuestionId(id);
+    }
+
+
+
 
 }
